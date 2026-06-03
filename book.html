@@ -1,0 +1,3500 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>L'Esprit Livre — Librairie des Savoirs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      /* -- DESIGN TOKENS -- */
+      :root {
+        --ink: #0e0d0b;
+        --ink-70: rgba(14, 13, 11, 0.7);
+        --ink-40: rgba(14, 13, 11, 0.4);
+        --ivory: #faf8f3;
+        --ivory-d: #f0ede5;
+        --parchment: #e2ddd4;
+        --gold: #c8a96e;
+        --gold-lt: rgba(200, 169, 110, 0.14);
+        --gold-glow: rgba(200, 169, 110, 0.32);
+        --rouge: #8b3a3a;
+        --surface: #ffffff;
+        --font-d: "Cormorant Garamond", Georgia, serif;
+        --font-b: "Outfit", system-ui, sans-serif;
+        --nav-h: 68px;
+        --r-md: 12px;
+        --r-lg: 20px;
+        --r-pill: 999px;
+        --sh-card: 0 2px 8px rgba(14, 13, 11, 0.06), 0 12px 32px rgba(14, 13, 11, 0.08);
+        --sh-hover: 0 8px 24px rgba(14, 13, 11, 0.13), 0 24px 56px rgba(14, 13, 11, 0.15);
+        --sh-modal: 0 32px 80px rgba(14, 13, 11, 0.28);
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
+        --t: 280ms;
+        --bg-nav: rgba(250, 248, 243, 0.94);
+        --max-w: 1280px;
+      }
+      [data-theme="dark"] {
+        --ink: #f0ece4;
+        --ink-70: rgba(240, 236, 228, 0.7);
+        --ink-40: rgba(240, 236, 228, 0.38);
+        --ivory: #131210;
+        --ivory-d: #1c1a17;
+        --parchment: rgba(240, 236, 228, 0.13);
+        --gold: #d4b57a;
+        --gold-lt: rgba(212, 181, 122, 0.12);
+        --gold-glow: rgba(212, 181, 122, 0.28);
+        --surface: #1c1a17;
+        --sh-card: 0 2px 8px rgba(0, 0, 0, 0.22), 0 12px 32px rgba(0, 0, 0, 0.3);
+        --sh-hover: 0 8px 24px rgba(0, 0, 0, 0.38), 0 24px 56px rgba(0, 0, 0, 0.42);
+        --sh-modal: 0 32px 80px rgba(0, 0, 0, 0.65);
+        --bg-nav: rgba(19, 18, 16, 0.94);
+      }
+
+      /* -- RESET -- */
+      *, *::before, *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        background: var(--ivory);
+        color: var(--ink);
+        font-family: var(--font-b);
+        font-size: 15px;
+        line-height: 1.65;
+        overflow-x: hidden;
+        transition: background var(--t), color var(--t);
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button {
+        font-family: var(--font-b);
+        cursor: pointer;
+      }
+      .container {
+        width: 92%;
+        max-width: var(--max-w);
+        margin: 0 auto;
+      }
+
+      /* -- PAGE SYSTEM -- */
+      .page {
+        display: none;
+      }
+      .page.active {
+        display: block;
+        animation: pageIn 420ms var(--ease) both;
+      }
+      @keyframes pageIn {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      /* -- NAVBAR -- */
+      #navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--nav-h);
+        background: var(--bg-nav);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--parchment);
+        z-index: 1000;
+        transition: box-shadow var(--t);
+      }
+      #navbar.scrolled {
+        box-shadow: 0 4px 24px rgba(14, 13, 11, 0.08);
+      }
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+      }
+      .nav-logo {
+        font-family: var(--font-d);
+        font-size: 1.4rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+      .nav-logo span {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        list-style: none;
+      }
+      .nav-links a {
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-70);
+        cursor: pointer;
+        position: relative;
+        padding-bottom: 3px;
+        transition: color 150ms;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: var(--gold);
+        transition: width var(--t) var(--ease);
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: var(--ink);
+      }
+      .nav-links a:hover::after,
+      .nav-links a.active::after {
+        width: 100%;
+      }
+      .nav-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .cart-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 18px;
+        height: 36px;
+        border-radius: var(--r-pill);
+        border: 1px solid var(--ink);
+        background: var(--ink);
+        color: var(--ivory);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all var(--t) var(--ease);
+      }
+      .cart-btn:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+      }
+      .cart-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: var(--gold);
+        color: var(--ink);
+        font-size: 0.62rem;
+        font-weight: 700;
+        padding: 0 4px;
+      }
+      @keyframes bump {
+        0%, 100% { transform: scale(1); }
+        50%       { transform: scale(1.4); }
+      }
+      .cart-count.bump {
+        animation: bump 300ms var(--ease);
+      }
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        padding: 4px;
+      }
+      .hamburger span {
+        display: block;
+        width: 22px;
+        height: 1.5px;
+        background: var(--ink);
+        transition: all var(--t) var(--ease);
+      }
+      .hamburger.open span:nth-child(1) {
+        transform: rotate(45deg) translate(4.5px, 4.5px);
+      }
+      .hamburger.open span:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.open span:nth-child(3) {
+        transform: rotate(-45deg) translate(4.5px, -4.5px);
+      }
+      .mobile-menu {
+        display: none;
+        position: fixed;
+        top: var(--nav-h);
+        left: 0;
+        right: 0;
+        background: var(--bg-nav);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--parchment);
+        z-index: 999;
+        padding: 20px 24px;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .mobile-menu a {
+        display: block;
+        padding: 12px 0;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-70);
+        cursor: pointer;
+        border-bottom: 1px solid var(--parchment);
+      }
+      .mobile-menu a:last-child {
+        border-bottom: none;
+      }
+
+      /* -- BUTTONS -- */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 28px;
+        border-radius: var(--r-pill);
+        background: var(--ink);
+        border: 1px solid var(--ink);
+        color: var(--ivory);
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all var(--t) var(--ease);
+      }
+      .btn-primary:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+        box-shadow: 0 6px 20px var(--gold-glow);
+        transform: translateY(-2px);
+      }
+      .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 28px;
+        border-radius: var(--r-pill);
+        background: transparent;
+        border: 1px solid var(--parchment);
+        color: var(--ink);
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all var(--t) var(--ease);
+      }
+      .btn-ghost:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+
+      /* -- SECTION HEADERS -- */
+      .s-eyebrow {
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--gold);
+        text-align: center;
+        margin-bottom: 10px;
+      }
+      .s-title {
+        font-family: var(--font-d);
+        font-size: clamp(1.8rem, 3.5vw, 3rem);
+        font-weight: 600;
+        text-align: center;
+        color: var(--ink);
+        margin-bottom: 14px;
+        line-height: 1.15;
+      }
+      .s-sub {
+        color: var(--ink-70);
+        text-align: center;
+        max-width: 520px;
+        margin: 0 auto 52px;
+        font-size: 0.95rem;
+        font-weight: 300;
+        line-height: 1.8;
+      }
+
+      /* -- HERO -- */
+      #hero {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        padding-top: var(--nav-h);
+        position: relative;
+        overflow: hidden;
+        background-image: url("pexels-technobulka-2908984.jpg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+      #hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.78);
+        pointer-events: none;
+      }
+      .hero-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        padding: 96px 0 80px;
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--parchment);
+        color: var(--gold);
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        border-radius: var(--r-pill);
+        margin-bottom: 32px;
+      }
+      .hero-heading {
+        font-family: var(--font-d);
+        font-size: clamp(3rem, 8vw, 6.5rem);
+        font-weight: 600;
+        line-height: 1.04;
+        margin-bottom: 24px;
+      }
+      .hero-heading .accent {
+        font-style: italic;
+        color: var(--gold);
+      }
+      .hero-bio {
+        color: var(--ink-70);
+        font-size: 1.05rem;
+        font-weight: 300;
+        max-width: 480px;
+        line-height: 1.85;
+        margin-bottom: 44px;
+      }
+      .hero-cta {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      @keyframes floatY {
+        0%, 100% { transform: translateY(0); }
+        50%       { transform: translateY(7px); }
+      }
+      .hero-scroll {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        color: var(--ink-40);
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-top: 48px;
+        animation: floatY 2.5s ease-in-out infinite;
+      }
+
+      /* -- STATS -- */
+      .stats-strip {
+        background: var(--surface);
+        border-top: 1px solid var(--parchment);
+        border-bottom: 1px solid var(--parchment);
+      }
+      .stats-inner {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .stat-item {
+        padding: 36px 24px;
+        text-align: center;
+        border-right: 1px solid var(--parchment);
+      }
+      .stat-item:last-child {
+        border-right: none;
+      }
+      .stat-num {
+        font-family: var(--font-d);
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: var(--gold);
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      .stat-label {
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-70);
+      }
+
+      /* -- SUBSCRIPTION PACKS -- */
+      .packs-section {
+        padding: 96px 0;
+        background: var(--ivory-d);
+      }
+      .packs-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .pack-card {
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-lg);
+        padding: 40px 32px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        transition: all var(--t) var(--ease);
+      }
+      .pack-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--sh-hover);
+      }
+      .pack-card.featured {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 1px var(--gold), var(--sh-card);
+      }
+      .pack-badge {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--gold);
+        color: var(--ink);
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 5px 16px;
+        border-radius: var(--r-pill);
+        white-space: nowrap;
+      }
+      .pack-tier {
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 12px;
+      }
+      .pack-name {
+        font-family: var(--font-d);
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 20px;
+      }
+      .pack-price {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        margin-bottom: 6px;
+      }
+      .pack-price-num {
+        font-family: var(--font-d);
+        font-size: 3.2rem;
+        font-weight: 700;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .pack-price-cur {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--ink-70);
+        align-self: flex-start;
+        padding-top: 8px;
+      }
+      .pack-price-period {
+        font-size: 0.8rem;
+        color: var(--ink-70);
+        margin-left: 2px;
+      }
+      .pack-desc {
+        font-size: 0.85rem;
+        color: var(--ink-70);
+        line-height: 1.7;
+        margin-bottom: 28px;
+        flex: 1;
+      }
+      .pack-features {
+        list-style: none;
+        margin-bottom: 32px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .pack-features li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+        color: var(--ink-70);
+      }
+      .pack-features li i {
+        color: var(--gold);
+        font-size: 0.75rem;
+        width: 16px;
+        flex-shrink: 0;
+      }
+      .pack-features li.disabled {
+        opacity: 0.4;
+      }
+      .pack-features li.disabled i {
+        color: var(--ink-40);
+      }
+      .btn-pack {
+        width: 100%;
+        padding: 13px;
+        border-radius: var(--r-pill);
+        font-family: var(--font-b);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all var(--t) var(--ease);
+        border: 1px solid var(--parchment);
+        background: transparent;
+        color: var(--ink);
+      }
+      .btn-pack:hover,
+      .pack-card.featured .btn-pack {
+        background: var(--ink);
+        border-color: var(--ink);
+        color: var(--ivory);
+      }
+
+      /* -- SPECIAL OFFERS -- */
+      .offres-section {
+        padding: 96px 0;
+      }
+      .offres-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      .offre-card {
+        border-radius: var(--r-lg);
+        padding: 48px 40px;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all var(--t) var(--ease);
+      }
+      .offre-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--sh-hover);
+      }
+      .offre-card.dark-card {
+        background: var(--ink);
+        color: var(--ivory);
+      }
+      .offre-card.gold-card {
+        background: linear-gradient(135deg, #c8a96e, #a8854a);
+        color: var(--ink);
+      }
+      .offre-tag {
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        opacity: 0.7;
+        margin-bottom: 14px;
+      }
+      .offre-title {
+        font-family: var(--font-d);
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 1.15;
+        margin-bottom: 12px;
+      }
+      .offre-text {
+        font-size: 0.88rem;
+        opacity: 0.75;
+        line-height: 1.7;
+        margin-bottom: 28px;
+        max-width: 340px;
+      }
+      .offre-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid currentColor;
+        padding-bottom: 2px;
+        opacity: 0.85;
+        transition: opacity 150ms;
+      }
+      .offre-card:hover .offre-action {
+        opacity: 1;
+      }
+      .offre-deco {
+        position: absolute;
+        right: -20px;
+        bottom: -20px;
+        font-size: 8rem;
+        opacity: 0.06;
+        pointer-events: none;
+        line-height: 1;
+      }
+
+      /* -- TESTIMONIALS -- */
+      .testimonials {
+        padding: 96px 0;
+        background: var(--ivory-d);
+      }
+      .testi-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .testi-card {
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-lg);
+        padding: 32px 28px;
+      }
+      .testi-stars {
+        color: var(--gold);
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+      }
+      .testi-quote {
+        font-family: var(--font-d);
+        font-size: 1.1rem;
+        font-style: italic;
+        color: var(--ink);
+        line-height: 1.7;
+        margin-bottom: 24px;
+      }
+      .testi-quote::before {
+        content: "\201C";
+        font-size: 3rem;
+        color: var(--gold);
+        line-height: 0;
+        vertical-align: -0.6em;
+        margin-right: 4px;
+      }
+      .testi-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .testi-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gold-lt);
+        border: 1px solid var(--parchment);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-d);
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--gold);
+        flex-shrink: 0;
+      }
+      .testi-name {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--ink);
+      }
+      .testi-role {
+        font-size: 0.72rem;
+        color: var(--ink-70);
+      }
+
+      /* -- LIBRARY PAGE -- */
+      .lib-hero {
+        padding: calc(var(--nav-h) + 60px) 0 48px;
+        text-align: center;
+      }
+      .category-tabs {
+        display: flex;
+        justify-content: center;
+        flex-wrap: nowrap;
+        gap: 0;
+        border-bottom: 1px solid var(--parchment);
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .category-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .category-tab {
+        padding: 12px 20px;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        color: var(--ink-70);
+        font-family: var(--font-b);
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        transition: color 150ms, border-color 150ms;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .category-tab:hover {
+        color: var(--ink);
+        border-bottom-color: var(--parchment);
+      }
+      .category-tab.active {
+        color: var(--ink);
+        border-bottom-color: var(--gold);
+      }
+      .filters-bar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        padding: 28px 0 40px;
+      }
+      .search-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-pill);
+        padding: 9px 20px;
+        transition: border-color 150ms, box-shadow 150ms;
+      }
+      .search-box:focus-within {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-lt);
+      }
+      .search-box i {
+        color: var(--gold);
+        font-size: 0.78rem;
+      }
+      .search-box input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--ink);
+        font-family: var(--font-b);
+        font-size: 0.85rem;
+        width: 200px;
+      }
+      .search-box input::placeholder {
+        color: var(--ink-40);
+      }
+      .filter-select {
+        appearance: none;
+        -webkit-appearance: none;
+        background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23c8a96e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center;
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-pill);
+        padding: 9px 36px 9px 18px;
+        color: var(--ink);
+        font-family: var(--font-b);
+        font-size: 0.78rem;
+        transition: border-color 150ms;
+      }
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-lt);
+      }
+      .books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+        gap: 24px;
+        margin-bottom: 64px;
+      }
+      .book-card {
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-lg);
+        overflow: hidden;
+        transition: transform var(--t) var(--ease), box-shadow var(--t) var(--ease), border-color var(--t) var(--ease);
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        animation: fadeUp 420ms var(--ease) both;
+      }
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .book-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--sh-hover);
+        border-color: var(--gold);
+      }
+      .book-cover {
+        height: 380px;
+        background: var(--ivory-d);
+        border-bottom: 1px solid var(--parchment);
+        overflow: hidden;
+      }
+      .book-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .book-info {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+      .book-cat-label {
+        font-size: 0.63rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 6px;
+      }
+      .book-title {
+        font-family: var(--font-d);
+        font-size: 1.2rem;
+        font-weight: 600;
+        line-height: 1.25;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+      .book-author {
+        font-size: 0.76rem;
+        color: var(--ink-70);
+        font-style: italic;
+        margin-bottom: 16px;
+      }
+      .book-divider {
+        border: none;
+        border-top: 1px solid var(--parchment);
+        margin: 0 0 12px;
+      }
+      .book-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+      .rating {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        color: var(--gold);
+        font-size: 0.68rem;
+      }
+      .rating-value {
+        color: var(--ink-70);
+        font-size: 0.73rem;
+        font-weight: 500;
+        margin-left: 3px;
+      }
+      .price {
+        font-family: var(--font-d);
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .add-to-cart {
+        width: 100%;
+        padding: 11px;
+        border-radius: var(--r-pill);
+        background: var(--ink);
+        border: 1px solid var(--ink);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ivory);
+        transition: all var(--t) var(--ease);
+        margin-top: auto;
+      }
+      .add-to-cart:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+        box-shadow: 0 4px 16px var(--gold-glow);
+      }
+      .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 80px 24px;
+        color: var(--ink-40);
+      }
+      .empty-icon {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+      }
+
+      /* -- ABOUT & CONTACT -- */
+      .about-hero {
+        padding: calc(var(--nav-h) + 80px) 0 80px;
+        text-align: center;
+      }
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+        padding-bottom: 96px;
+      }
+      .about-visual {
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-lg);
+        height: 420px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .about-visual-deco {
+        font-size: 7rem;
+        opacity: 0.12;
+        position: absolute;
+      }
+      .about-visual-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 32px;
+      }
+      .about-visual-content .big-num {
+        font-family: var(--font-d);
+        font-size: 5rem;
+        font-weight: 700;
+        color: var(--gold);
+        line-height: 1;
+        display: block;
+      }
+      .about-visual-content p {
+        font-size: 0.8rem;
+        color: var(--ink-70);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-top: 8px;
+      }
+      .about-text h3 {
+        font-family: var(--font-d);
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 20px;
+        line-height: 1.2;
+      }
+      .about-text p {
+        color: var(--ink-70);
+        font-size: 0.95rem;
+        line-height: 1.85;
+        margin-bottom: 18px;
+        font-weight: 300;
+      }
+      .about-values {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 32px;
+      }
+      .value-item {
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-md);
+        padding: 18px 20px;
+      }
+      .value-icon {
+        color: var(--gold);
+        font-size: 1rem;
+        margin-bottom: 8px;
+      }
+      .value-name {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+      .value-desc {
+        font-size: 0.75rem;
+        color: var(--ink-70);
+        line-height: 1.6;
+      }
+      .team-section {
+        padding: 80px 0;
+        background: var(--ivory-d);
+      }
+      .team-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .team-card {
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-lg);
+        padding: 32px 28px;
+        text-align: center;
+        transition: all var(--t) var(--ease);
+      }
+      .team-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--sh-hover);
+        border-color: var(--gold);
+      }
+      .team-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: var(--gold-lt);
+        border: 2px solid var(--parchment);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-d);
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--gold);
+        margin: 0 auto 16px;
+      }
+      .team-name {
+        font-family: var(--font-d);
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 4px;
+      }
+      .team-role {
+        font-size: 0.73rem;
+        color: var(--gold);
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .team-bio {
+        font-size: 0.8rem;
+        color: var(--ink-70);
+        line-height: 1.65;
+      }
+      .contact-section {
+        padding: 96px 0;
+      }
+      .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr;
+        gap: 64px;
+        align-items: start;
+      }
+      .contact-info h3 {
+        font-family: var(--font-d);
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 20px;
+        line-height: 1.2;
+      }
+      .contact-info p {
+        color: var(--ink-70);
+        font-size: 0.9rem;
+        line-height: 1.85;
+        margin-bottom: 32px;
+        font-weight: 300;
+      }
+      .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 22px;
+      }
+      .contact-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--r-md);
+        background: var(--gold-lt);
+        border: 1px solid var(--parchment);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gold);
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+      .contact-item-text strong {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink);
+        margin-bottom: 3px;
+      }
+      .contact-item-text span {
+        font-size: 0.85rem;
+        color: var(--ink-70);
+      }
+      .social-links {
+        display: flex;
+        gap: 10px;
+        margin-top: 32px;
+      }
+      .social-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--r-md);
+        border: 1px solid var(--parchment);
+        background: transparent;
+        color: var(--ink-70);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        transition: all 150ms;
+      }
+      .social-btn:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+        background: var(--gold-lt);
+      }
+      .contact-form {
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-lg);
+        padding: 40px;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        margin-bottom: 18px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-70);
+        margin-bottom: 7px;
+      }
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        background: var(--ivory);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-md);
+        padding: 11px 16px;
+        color: var(--ink);
+        font-family: var(--font-b);
+        font-size: 0.88rem;
+        outline: none;
+        resize: none;
+        transition: border-color 150ms, box-shadow 150ms;
+      }
+      .form-group input::placeholder,
+      .form-group textarea::placeholder {
+        color: var(--ink-40);
+      }
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-lt);
+      }
+      .form-group textarea {
+        min-height: 120px;
+      }
+      .btn-submit {
+        width: 100%;
+        padding: 14px;
+        border-radius: var(--r-pill);
+        background: var(--ink);
+        border: 1px solid var(--ink);
+        color: var(--ivory);
+        font-size: 0.76rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        transition: all var(--t) var(--ease);
+        margin-top: 8px;
+      }
+      .btn-submit:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+        box-shadow: 0 6px 20px var(--gold-glow);
+      }
+      .map-placeholder {
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-lg);
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: var(--ink-70);
+        font-size: 0.85rem;
+        margin-top: 24px;
+      }
+      .map-placeholder i {
+        font-size: 1.8rem;
+        color: var(--gold);
+      }
+
+      /* -- FOOTER -- */
+      .site-footer {
+        border-top: 1px solid var(--parchment);
+        padding: 48px 0 32px;
+      }
+      .footer-top {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr 1fr 1fr;
+        gap: 48px;
+        margin-bottom: 48px;
+      }
+      .footer-logo {
+        font-family: var(--font-d);
+        font-size: 1.3rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink);
+        margin-bottom: 12px;
+      }
+      .footer-logo span {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .footer-brand-col p {
+        font-size: 0.82rem;
+        color: var(--ink-70);
+        line-height: 1.7;
+        max-width: 220px;
+      }
+      .footer-col h4 {
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 16px;
+      }
+      .footer-col ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+      .footer-col ul li a,
+      .footer-col ul li span {
+        font-size: 0.82rem;
+        color: var(--ink-70);
+        cursor: pointer;
+        transition: color 150ms;
+        display: block;
+      }
+      .footer-col ul li a:hover,
+      .footer-col ul li span:hover {
+        color: var(--gold);
+      }
+      .footer-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid var(--parchment);
+        padding-top: 24px;
+      }
+      .footer-bottom p {
+        font-size: 0.75rem;
+        color: var(--ink-70);
+      }
+      .footer-bottom-links {
+        display: flex;
+        gap: 24px;
+      }
+      .footer-bottom-links a {
+        font-size: 0.73rem;
+        color: var(--ink-70);
+        cursor: pointer;
+        transition: color 150ms;
+      }
+      .footer-bottom-links a:hover {
+        color: var(--gold);
+      }
+
+      /* -- MODAL BASE -- */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(14, 13, 11, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity var(--t) var(--ease), visibility var(--t) var(--ease);
+      }
+      .modal-overlay.open {
+        visibility: visible;
+        opacity: 1;
+      }
+      .modal-box {
+        background: var(--surface);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-lg);
+        box-shadow: var(--sh-modal);
+        transform: translateY(24px) scale(0.97);
+        transition: transform 360ms var(--ease);
+      }
+      .modal-overlay.open .modal-box {
+        transform: none;
+      }
+
+      /* -- CART MODAL -- */
+      .cart-modal-title {
+        font-family: var(--font-d);
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--parchment);
+      }
+      .cart-items-list {
+        max-height: 320px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--parchment) transparent;
+      }
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--parchment);
+        gap: 16px;
+      }
+      .cart-item:last-child {
+        border-bottom: none;
+      }
+      .cart-item strong {
+        font-family: var(--font-d);
+        font-size: 1rem;
+        font-weight: 600;
+        display: block;
+        color: var(--ink);
+      }
+      .cart-item small {
+        font-size: 0.73rem;
+        color: var(--ink-70);
+      }
+      .cart-item-price {
+        font-family: var(--font-d);
+        font-size: 1.05rem;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      .cart-item-remove {
+        background: transparent;
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-pill);
+        padding: 3px 11px;
+        font-size: 0.68rem;
+        color: var(--ink-70);
+        white-space: nowrap;
+        transition: all 150ms;
+        flex-shrink: 0;
+      }
+      .cart-item-remove:hover {
+        border-color: var(--rouge);
+        color: var(--rouge);
+      }
+      .cart-discount-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0 0;
+        font-size: 0.82rem;
+        color: var(--gold);
+      }
+      .cart-total {
+        font-family: var(--font-d);
+        font-size: 1.5rem;
+        font-weight: 600;
+        text-align: right;
+        border-top: 2px solid var(--gold);
+        padding-top: 16px;
+        margin-top: 8px;
+        color: var(--ink);
+      }
+      .cart-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 24px;
+        gap: 12px;
+      }
+      .btn-clear {
+        padding: 10px 22px;
+        border-radius: var(--r-pill);
+        border: 1px solid var(--parchment);
+        background: transparent;
+        color: var(--ink-70);
+        font-size: 0.73rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all 150ms;
+      }
+      .btn-clear:hover {
+        border-color: var(--rouge);
+        color: var(--rouge);
+      }
+      .btn-buy {
+        padding: 10px 22px;
+        border-radius: var(--r-pill);
+        background: var(--ink);
+        border: 1px solid var(--ink);
+        color: var(--ivory);
+        font-size: 0.73rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all 150ms;
+      }
+      .btn-buy:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+      }
+
+      /* -- BOOK DETAIL MODAL -- */
+      .book-detail-cover {
+        height: 220px;
+        overflow: hidden;
+        border-bottom: 1px solid var(--parchment);
+        position: relative;
+      }
+      .book-detail-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .book-detail-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(14, 13, 11, 0.55);
+        border: none;
+        color: #fff;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 150ms;
+      }
+      .book-detail-close:hover {
+        background: rgba(14, 13, 11, 0.85);
+      }
+      .book-detail-body {
+        padding: 24px 28px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .book-detail-cat {
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
+      .book-detail-title {
+        font-family: var(--font-d);
+        font-size: 1.7rem;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+      .book-detail-author {
+        font-size: 0.82rem;
+        color: var(--ink-70);
+        font-style: italic;
+      }
+      .book-detail-desc {
+        font-size: 0.85rem;
+        color: var(--ink-70);
+        line-height: 1.75;
+        margin-top: 4px;
+      }
+      .book-detail-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 4px;
+        padding-top: 12px;
+        border-top: 1px solid var(--parchment);
+      }
+      .book-detail-rating {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--gold);
+        font-size: 0.8rem;
+      }
+      .book-detail-price {
+        font-family: var(--font-d);
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .book-detail-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .btn-detail-cancel {
+        flex: 1;
+        padding: 11px;
+        border-radius: var(--r-pill);
+        border: 1px solid var(--parchment);
+        background: transparent;
+        color: var(--ink-70);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all 150ms;
+      }
+      .btn-detail-cancel:hover {
+        border-color: var(--rouge);
+        color: var(--rouge);
+      }
+      .btn-detail-add {
+        flex: 2;
+        padding: 11px;
+        border-radius: var(--r-pill);
+        background: var(--ink);
+        border: 1px solid var(--ink);
+        color: var(--ivory);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all var(--t) var(--ease);
+      }
+      .btn-detail-add:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+        box-shadow: 0 4px 16px var(--gold-glow);
+      }
+
+      /* -- CONFIRM MODAL -- */
+      .confirm-title {
+        font-family: var(--font-d);
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--ink);
+        margin-bottom: 6px;
+      }
+      .confirm-sub {
+        font-size: 0.82rem;
+        color: var(--ink-70);
+        margin-bottom: 20px;
+      }
+      .form-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-70);
+        display: block;
+        margin-bottom: 7px;
+      }
+      .confirm-select {
+        width: 100%;
+        background: var(--ivory);
+        border: 1px solid var(--parchment);
+        border-radius: var(--r-md);
+        padding: 10px 14px;
+        color: var(--ink);
+        font-family: var(--font-b);
+        font-size: 0.88rem;
+        outline: none;
+        margin-bottom: 20px;
+      }
+      .confirm-select:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-lt);
+      }
+      .confirm-btns {
+        display: flex;
+        gap: 10px;
+      }
+      .btn-confirm-cancel {
+        flex: 1;
+        padding: 11px;
+        border-radius: var(--r-pill);
+        border: 1px solid var(--parchment);
+        background: transparent;
+        color: var(--ink-70);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all 150ms;
+      }
+      .btn-confirm-cancel:hover {
+        border-color: var(--rouge);
+        color: var(--rouge);
+      }
+      .btn-confirm-add {
+        flex: 2;
+        padding: 11px;
+        border-radius: var(--r-pill);
+        background: var(--ink);
+        border: 1px solid var(--ink);
+        color: var(--ivory);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all var(--t) var(--ease);
+      }
+      .btn-confirm-add:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+      }
+
+      /* -- OFFER MODAL -- */
+      .offer-modal-head {
+        padding: 24px 28px 18px;
+        border-bottom: 1px solid var(--parchment);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        flex-shrink: 0;
+      }
+      .offer-modal-tag {
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
+      .offer-modal-title {
+        font-family: var(--font-d);
+        font-size: 1.55rem;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+      .offer-modal-quota {
+        font-size: 0.8rem;
+        color: var(--ink-70);
+        margin-top: 4px;
+      }
+      .offer-modal-quota strong {
+        color: var(--gold);
+      }
+      .offer-modal-close {
+        background: none;
+        border: 1px solid var(--parchment);
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        color: var(--ink-70);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 150ms;
+      }
+      .offer-modal-close:hover {
+        border-color: var(--rouge);
+        color: var(--rouge);
+      }
+      .offer-modal-books {
+        overflow-y: auto;
+        padding: 20px 28px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 14px;
+        flex: 1;
+      }
+      .offer-book-item {
+        border: 2px solid var(--parchment);
+        border-radius: var(--r-md);
+        overflow: hidden;
+        cursor: pointer;
+        transition: all var(--t) var(--ease);
+        position: relative;
+        background: var(--surface);
+      }
+      .offer-book-item:hover {
+        border-color: var(--gold);
+        transform: translateY(-3px);
+        box-shadow: var(--sh-card);
+      }
+      .offer-book-item.selected {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px var(--gold-glow);
+      }
+      .offer-book-item.disabled {
+        opacity: 0.38;
+        cursor: not-allowed;
+      }
+      .offer-book-item.disabled:hover {
+        transform: none;
+        box-shadow: none;
+        border-color: var(--parchment);
+      }
+      .offer-book-cover {
+        height: 140px;
+        overflow: hidden;
+      }
+      .offer-book-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .offer-book-info {
+        padding: 10px 10px 12px;
+      }
+      .offer-book-title {
+        font-family: var(--font-d);
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--ink);
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .offer-book-author {
+        font-size: 0.68rem;
+        color: var(--ink-70);
+        font-style: italic;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 2px;
+      }
+      .offer-book-price {
+        font-family: var(--font-d);
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--gold);
+        margin-top: 4px;
+      }
+      .offer-book-check {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--gold);
+        color: var(--ink);
+        font-size: 0.7rem;
+        font-weight: 700;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+      .offer-book-item.selected .offer-book-check {
+        display: flex;
+      }
+      .offer-modal-footer {
+        padding: 16px 28px;
+        border-top: 1px solid var(--parchment);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+      }
+      .offer-modal-summary {
+        font-size: 0.83rem;
+        color: var(--ink-70);
+      }
+      .offer-modal-summary strong {
+        color: var(--ink);
+      }
+      .offer-prices {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-top: 4px;
+      }
+      .offer-price-old {
+        font-size: 0.9rem;
+        color: var(--ink-40);
+        text-decoration: line-through;
+      }
+      .offer-price-new {
+        font-family: var(--font-d);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gold);
+      }
+      .offer-badge {
+        font-size: 0.65rem;
+        font-weight: 700;
+        background: var(--gold);
+        color: var(--ink);
+        padding: 3px 8px;
+        border-radius: var(--r-pill);
+      }
+      .offer-modal-btns {
+        display: flex;
+        gap: 10px;
+      }
+      .btn-offer-cancel {
+        padding: 11px 22px;
+        border-radius: var(--r-pill);
+        border: 1px solid var(--parchment);
+        background: transparent;
+        color: var(--ink-70);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all 150ms;
+      }
+      .btn-offer-cancel:hover {
+        border-color: var(--rouge);
+        color: var(--rouge);
+      }
+      .btn-offer-confirm {
+        padding: 11px 26px;
+        border-radius: var(--r-pill);
+        background: var(--ink);
+        border: 1px solid var(--ink);
+        color: var(--ivory);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all var(--t) var(--ease);
+      }
+      .btn-offer-confirm:hover:not(:disabled) {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+        box-shadow: 0 4px 16px var(--gold-glow);
+      }
+      .btn-offer-confirm:disabled {
+        opacity: 0.38;
+        cursor: not-allowed;
+      }
+
+      /* -- CONTACT PACK MODAL -- */
+      .contact-premium-modal {
+        max-width: 480px;
+        width: 90%;
+        padding: 0;
+        overflow: hidden;
+      }
+      .contact-premium-header {
+        background: var(--gold);
+        padding: 24px 28px;
+        text-align: center;
+      }
+      .contact-premium-header i {
+        font-size: 2.5rem;
+        color: var(--ink);
+        margin-bottom: 10px;
+      }
+      .contact-premium-header h3 {
+        font-family: var(--font-d);
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .contact-premium-body {
+        padding: 32px 28px;
+        text-align: center;
+      }
+      .contact-premium-body p {
+        color: var(--ink-70);
+        margin-bottom: 24px;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+      .contact-premium-buttons {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+      }
+      .btn-contact-close {
+        padding: 11px 24px;
+        border-radius: var(--r-pill);
+        border: 1px solid var(--parchment);
+        background: transparent;
+        color: var(--ink-70);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all 150ms;
+      }
+      .btn-contact-close:hover {
+        border-color: var(--rouge);
+        color: var(--rouge);
+      }
+      .btn-contact-whatsapp {
+        padding: 11px 24px;
+        border-radius: var(--r-pill);
+        background: #25d366;
+        border: none;
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all 150ms;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-contact-whatsapp:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.05);
+        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+      }
+
+      /* -- TOAST NOTIFICATION -- */
+      .notification {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        background: var(--ink);
+        color: var(--ivory);
+        padding: 12px 22px;
+        border-radius: var(--r-pill);
+        font-size: 0.78rem;
+        font-weight: 500;
+        z-index: 3000;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity var(--t) var(--ease), transform var(--t) var(--ease);
+        pointer-events: none;
+        border: 1px solid rgba(200, 169, 110, 0.3);
+        max-width: 280px;
+      }
+      .notification.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* -- PACK CONTACT BUTTON -- */
+      .pack-contact-msg {
+        margin-top: 24px;
+      }
+      .pack-contact-msg .btn-primary,
+      .pack-contact-msg button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        width: 100%;
+        padding: 13px 28px;
+        border-radius: var(--r-pill);
+        background: var(--ink);
+        border: 1px solid var(--ink);
+        color: var(--ivory);
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: all var(--t) var(--ease);
+        cursor: pointer;
+      }
+      .pack-contact-msg .btn-primary:hover,
+      .pack-contact-msg button:hover {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: var(--ink);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px var(--gold-glow);
+      }
+
+      /* -- RESPONSIVE -- */
+      @media (max-width: 900px) {
+        .nav-links {
+          display: none;
+        }
+        .hamburger {
+          display: flex;
+        }
+        .packs-grid,
+        .offres-grid,
+        .testi-grid {
+          grid-template-columns: 1fr;
+        }
+        .stats-inner {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .about-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .team-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+        .footer-top {
+          grid-template-columns: 1fr 1fr;
+          gap: 32px;
+        }
+      }
+      @media (max-width: 600px) {
+        .team-grid {
+          grid-template-columns: 1fr;
+        }
+        .footer-top {
+          grid-template-columns: 1fr;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          gap: 12px;
+          text-align: center;
+        }
+        .offer-modal-books {
+          grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+          padding: 14px 16px;
+        }
+        .offer-modal-head,
+        .offer-modal-footer {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <nav id="navbar">
+      <div class="container nav-inner">
+        <div class="nav-logo" onclick="showPage('accueil')">
+          L'ESPRIT<span>Livre</span>
+        </div>
+        <ul class="nav-links">
+          <li><a onclick="showPage('accueil')" data-page="accueil" class="active">Accueil</a></li>
+          <li><a onclick="showPage('librairie')" data-page="librairie">Librairie</a></li>
+          <li><a onclick="showPage('contact')" data-page="contact">À propos &amp; Contact</a></li>
+        </ul>
+        <div class="nav-controls">
+          <button class="cart-btn" id="cartBtn">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-count" id="cartCount">0</span>
+          </button>
+          <button class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a onclick="showPage('accueil'); closeMobile();">Accueil</a>
+      <a onclick="showPage('librairie'); closeMobile();">Librairie</a>
+      <a onclick="showPage('contact'); closeMobile();">À propos &amp; Contact</a>
+    </div>
+
+    <!-- PAGE ACCUEIL -->
+    <div class="page active" id="page-accueil">
+      <section id="hero">
+        <div class="container hero-inner">
+          <div class="hero-badge">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Librairie d'exception — Tétouan</span>
+          </div>
+          <h1 class="hero-heading">
+            L'Esprit <span class="accent">Libre</span><br />commence ici
+          </h1>
+          <p class="hero-bio">
+            Romans, philosophie, spiritualité, science, poésie et psychologie —
+            une collection pensée pour les esprits curieux de toutes les cultures.
+          </p>
+          <div class="hero-cta">
+            <button class="btn-primary" onclick="showPage('librairie')">
+              <i class="fa-solid fa-book"></i> Explorer la librairie
+            </button>
+            <button class="btn-ghost" onclick="document.getElementById('packs-section').scrollIntoView({ behavior: 'smooth' })">
+              <i class="fa-solid fa-tag"></i> Voir les packs
+            </button>
+          </div>
+          <div class="hero-scroll">
+            <i class="fa-solid fa-chevron-down"></i>
+          </div>
+        </div>
+      </section>
+
+      <div class="stats-strip">
+        <div class="container">
+          <div class="stats-inner">
+            <div class="stat-item">
+              <div class="stat-num">25+</div>
+              <div class="stat-label">Titres en catalogue</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">6</div>
+              <div class="stat-label">Catégories</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">4.7★</div>
+              <div class="stat-label">Note moyenne</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">2 000+</div>
+              <div class="stat-label">Lecteurs satisfaits</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="packs-section" id="packs-section">
+        <div class="container">
+          <p class="s-eyebrow">Abonnements mensuels</p>
+          <h2 class="s-title">Lisez plus, payez moins</h2>
+          <p class="s-sub">Choisissez la formule qui correspond à votre passion de la lecture.</p>
+          <div class="packs-grid">
+
+            <div class="pack-card">
+              <div class="pack-tier">Decouverte</div>
+              <div class="pack-name">Lecteur Curieux</div>
+              <div class="pack-price">
+                <span class="pack-price-cur">MAD</span>
+                <span class="pack-price-num">79</span>
+                <span class="pack-price-period">/ mois</span>
+              </div>
+              <p class="pack-desc">
+                Parfait pour demarrer. 1 livre soigneusement selectionne chaque mois, livre chez vous a Tetouan.
+              </p>
+              <ul class="pack-features">
+                <li><i class="fa-solid fa-check"></i> 1 livre au choix / mois</li>
+                <li><i class="fa-solid fa-check"></i> Livraison gratuite a Tetouan</li>
+                <li><i class="fa-solid fa-check"></i> Newsletter litteraire</li>
+                <li class="disabled"><i class="fa-solid fa-xmark"></i> Acces e-books</li>
+                <li class="disabled"><i class="fa-solid fa-xmark"></i> Recommandations personnalisees</li>
+              </ul>
+              <div class="pack-contact-msg">
+                <button class="btn-primary" onclick="openContactPackModal()">Nous contacter</button>
+              </div>
+            </div>
+
+            <div class="pack-card featured">
+              <div class="pack-badge">Le plus populaire</div>
+              <div class="pack-tier">Passionne</div>
+              <div class="pack-name">Esprit Libre</div>
+              <div class="pack-price">
+                <span class="pack-price-cur">MAD</span>
+                <span class="pack-price-num">169</span>
+                <span class="pack-price-period">/ mois</span>
+              </div>
+              <p class="pack-desc">
+                3 livres par mois, e-books inclus et recommandations sur mesure. Le meilleur rapport qualite-prix.
+              </p>
+              <ul class="pack-features">
+                <li><i class="fa-solid fa-check"></i> 3 livres au choix / mois</li>
+                <li><i class="fa-solid fa-check"></i> Livraison gratuite partout au Maroc</li>
+                <li><i class="fa-solid fa-check"></i> Acces e-books illimite</li>
+                <li><i class="fa-solid fa-check"></i> Recommandations personnalisees</li>
+                <li class="disabled"><i class="fa-solid fa-xmark"></i> Acces avant-premieres</li>
+              </ul>
+              <div class="pack-contact-msg">
+                <button class="btn-primary" onclick="openContactPackModal()">Nous contacter</button>
+              </div>
+            </div>
+
+            <div class="pack-card">
+              <div class="pack-tier">Erudit</div>
+              <div class="pack-name">Grand Lecteur</div>
+              <div class="pack-price">
+                <span class="pack-price-cur">MAD</span>
+                <span class="pack-price-num">279</span>
+                <span class="pack-price-period">/ mois</span>
+              </div>
+              <p class="pack-desc">
+                Pour les grands lecteurs : 5 livres, livraison express, e-books, audios et acces aux nouveautes en avant-premiere.
+              </p>
+              <ul class="pack-features">
+                <li><i class="fa-solid fa-check"></i> 5 livres au choix / mois</li>
+                <li><i class="fa-solid fa-check"></i> Livraison prioritaire express</li>
+                <li><i class="fa-solid fa-check"></i> Acces e-books &amp; audios</li>
+                <li><i class="fa-solid fa-check"></i> Recommandations &amp; curation</li>
+                <li><i class="fa-solid fa-check"></i> Acces avant-premieres exclusives</li>
+              </ul>
+              <div class="pack-contact-msg">
+                <button class="btn-primary" id="btcn" onclick="openContactPackModal()">Nous contacter</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <section class="offres-section">
+        <div class="container">
+          <p class="s-eyebrow">Offres speciales</p>
+          <h2 class="s-title">Nos promotions du moment</h2>
+          <div class="offres-grid">
+            <div class="offre-card dark-card" onclick="openOfferModal('philo')">
+              <div class="offre-tag">Offre limitee</div>
+              <div class="offre-title">Pack Philosophie<br />— 3 livres</div>
+              <div class="offre-text">
+                Selection de 3 grands textes philosophiques avec une reduction de 25% sur le total. Une invitation a penser autrement.
+              </div>
+              <div class="offre-action">
+                <span>Decouvrir l'offre</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+              <div class="offre-deco"></div>
+            </div>
+            <div class="offre-card gold-card" onclick="openOfferModal('romans')">
+              <div class="offre-tag">Nouveau</div>
+              <div class="offre-title">Box Romans<br />Classiques</div>
+              <div class="offre-text">
+                Une boite de 4 romans classiques selectionnes par notre equipe pour vous faire (re)decouvrir les chefs-d'oeuvre de la litterature.
+              </div>
+              <div class="offre-action">
+                <span>Commander la box</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+              <div class="offre-deco"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="testimonials">
+        <div class="container">
+          <p class="s-eyebrow">Ce qu'ils disent</p>
+          <h2 class="s-title">Nos lecteurs temoignent</h2>
+          <div class="testi-grid">
+            <div class="testi-card">
+              <div class="testi-stars">★★★★★</div>
+              <p class="testi-quote">
+                Une librairie qui comprend vraiment les lecteurs passionnes. La selection est impeccable et la qualite irréprochable.
+              </p>
+              <div class="testi-author">
+                <div class="testi-avatar">SB</div>
+                <div>
+                  <div class="testi-name">Sara Benali</div>
+                  <div class="testi-role">Abonnee Esprit Libre</div>
+                </div>
+              </div>
+            </div>
+            <div class="testi-card">
+              <div class="testi-stars">★★★★★</div>
+              <p class="testi-quote">
+                Le pack mensuel a transforme ma relation avec la lecture. Je decouvre des auteurs que je n'aurais jamais explores seul.
+              </p>
+              <div class="testi-author">
+                <div class="testi-avatar">KM</div>
+                <div>
+                  <div class="testi-name">Karim Mansouri</div>
+                  <div class="testi-role">Abonne Grand Lecteur</div>
+                </div>
+              </div>
+            </div>
+            <div class="testi-card">
+              <div class="testi-stars">★★★★☆</div>
+              <p class="testi-quote">
+                La livraison est rapide et les livres arrivent toujours en parfait etat. Le service client est exceptionnel et tres reactif.
+              </p>
+              <div class="testi-author">
+                <div class="testi-avatar">LA</div>
+                <div>
+                  <div class="testi-name">Leila Amrani</div>
+                  <div class="testi-role">Cliente reguliere</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <div class="container">
+          <div class="footer-top">
+            <div class="footer-brand-col">
+              <div class="footer-logo">L'ESPRIT<span>Livre</span></div>
+              <p>Votre librairie de reference a Tetouan. Des oeuvres soigneusement selectionnees pour nourrir votre esprit.</p>
+            </div>
+            <div class="footer-col">
+              <h4>Navigation</h4>
+              <ul>
+                <li><span onclick="showPage('accueil')">Accueil</span></li>
+                <li><span onclick="showPage('librairie')">Librairie</span></li>
+                <li><span onclick="showPage('contact')">A propos</span></li>
+                <li><span onclick="showPage('contact')">Contact</span></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Categories</h4>
+              <ul>
+                <li><span onclick="showPage('librairie', 'romans')">Romans</span></li>
+                <li><span onclick="showPage('librairie', 'philosophique')">Philosophie</span></li>
+                <li><span onclick="showPage('librairie', 'religieux')">Spirituel</span></li>
+                <li><span onclick="showPage('librairie', 'scientifique')">Science</span></li>
+              </ul>
+            </div>
+            <div class="footer-col">
+              <h4>Contact</h4>
+              <ul>
+                <li><a href="tel:+212707694637">+212 7 07 69 46 37</a></li>
+                <li><a href="mailto:contact@esprtivre.ma">contact@esprtivre.ma</a></li>
+                <li><span>Tetouan, Maroc</span></li>
+              </ul>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <p>© 2025 L'Esprit Livre. Tous droits reserves.</p>
+            <div class="footer-bottom-links">
+              <a>Mentions legales</a><a>Confidentialite</a><a>CGV</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- PAGE LIBRAIRIE -->
+    <div class="page" id="page-librairie">
+      <div class="lib-hero">
+        <div class="container">
+          <p class="s-eyebrow">Notre catalogue</p>
+          <h2 class="s-title">La Librairie</h2>
+        </div>
+      </div>
+      <div class="container">
+        <div class="category-tabs">
+          <button class="category-tab active" data-cat="all">Tout</button>
+          <button class="category-tab" data-cat="romans">Romans</button>
+          <button class="category-tab" data-cat="philosophique">Philosophie</button>
+          <button class="category-tab" data-cat="religieux">Spirituel</button>
+          <button class="category-tab" data-cat="scientifique">Science</button>
+          <button class="category-tab" data-cat="poesie">Poesie</button>
+          <button class="category-tab" data-cat="psychologique">Psychologie</button>
+        </div>
+        <div class="filters-bar">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Rechercher un titre, un auteur…" />
+          </div>
+          <select class="filter-select" id="priceFilter">
+            <option value="all">Tous les prix</option>
+            <option value="0-15">Moins de 15 MAD</option>
+            <option value="15-20">15 – 20 MAD</option>
+            <option value="20-99">Plus de 20 MAD</option>
+          </select>
+          <select class="filter-select" id="ratingFilter">
+            <option value="all">Toutes les notes</option>
+            <option value="4.5">4.5 ★ et plus</option>
+            <option value="4.0">4.0 ★ et plus</option>
+          </select>
+        </div>
+        <div class="books-grid" id="booksGrid"></div>
+      </div>
+    </div>
+
+    <!-- PAGE CONTACT -->
+    <div class="page" id="page-contact">
+      <div class="about-hero">
+        <div class="container">
+          <p class="s-eyebrow">Notre histoire</p>
+          <h2 class="s-title">A propos de L'Esprit Livre</h2>
+          <p class="s-sub">Une librairie fondee par des passionnes de culture et de savoir, au coeur de Tetouan.</p>
+        </div>
+      </div>
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-visual">
+            <div class="about-visual-deco"></div>
+            <div class="about-visual-content">
+              <span class="big-num">2026</span>
+              <p>Annee de fondation</p>
+            </div>
+          </div>
+          <div class="about-text">
+            <h3>Une librairie nee de la passion des livres</h3>
+            <p>
+              L'Esprit Livre est nee d'une conviction simple : les livres ont le pouvoir de transformer des vies. Fondée en 2019 a Tetouan, notre librairie propose une selection rigoureuse d'ouvrages dans six domaines fondamentaux de la connaissance humaine.
+            </p>
+            <p>
+              Notre mission est de rendre la grande litterature accessible a tous, de creer un espace de rencontre entre les idees et les lecteurs, et de nourrir la curiosite intellectuelle de notre communaute.
+            </p>
+            <div class="about-values">
+              <div class="value-item">
+                <div class="value-icon"><i class="fa-solid fa-book-open"></i></div>
+                <div class="value-name">Curation</div>
+                <div class="value-desc">Chaque livre est selectionne avec soin par nos experts.</div>
+              </div>
+              <div class="value-item">
+                <div class="value-icon"><i class="fa-solid fa-star"></i></div>
+                <div class="value-name">Excellence</div>
+                <div class="value-desc">Nous ne proposons que des oeuvres de qualite.</div>
+              </div>
+              <div class="value-item">
+                <div class="value-icon"><i class="fa-solid fa-users"></i></div>
+                <div class="value-name">Communaute</div>
+                <div class="value-desc">Un espace de partage pour tous les lecteurs.</div>
+              </div>
+              <div class="value-item">
+                <div class="value-icon"><i class="fa-solid fa-globe"></i></div>
+                <div class="value-name">Diversite</div>
+                <div class="value-desc">Des oeuvres de toutes les cultures et traditions.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-section">
+        <div class="container">
+          <p class="s-eyebrow">Notre equipe</p>
+          <h2 class="s-title">Les visages derriere L'Esprit Livre</h2>
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-avatar">OJ</div>
+              <div class="team-name">Oussama jdyaa</div>
+              <div class="team-role">Fondateur &amp; Directeur</div>
+              <p class="team-bio">Amoureux des lettres francaises et de la philosophie arabe. Elle a fonde L'Esprit Livre pour partager sa passion avec Tetouan.</p>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">BE</div>
+              <div class="team-name">Bassim El Bakkali</div>
+              <div class="team-role">Responsable selection</div>
+              <p class="team-bio">Docteur en litterature comparee, il veille a la diversite et a la richesse de notre catalogue avec une rigueur bienveillante.</p>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">SE</div>
+              <div class="team-name">sara Erquiouaq</div>
+              <div class="team-role">Relation Client & Packs</div>
+              <p class="team-bio">Passionnee de psychologie et de developpement personnel, elle accompagne nos abonnes dans leurs choix de lecture.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-section">
+        <div class="container">
+          <div class="contact-grid">
+            <div class="contact-info">
+              <h3>Nous contacter</h3>
+              <p>Vous avez des questions sur nos livres, nos packs ou nos livraisons ? Notre equipe est la pour vous répondre.</p>
+              <div class="contact-item">
+                <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="contact-item-text">
+                  <strong>Adresse</strong><span>Tetouan 93000, Maroc</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+                <div class="contact-item-text">
+                  <strong>Telephone</strong><span>+212 7 07 69 46 37</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="contact-item-text">
+                  <strong>Email</strong><span>contact@esprtivre.ma</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon"><i class="fa-solid fa-clock"></i></div>
+                <div class="contact-item-text">
+                  <strong>Horaires</strong><span>Lun–Sam : 9h–20h · Dim : 10h–17h</span>
+                </div>
+              </div>
+              <div class="social-links">
+                <button class="social-btn"><i class="fa-brands fa-instagram"></i></button>
+                <button class="social-btn"><i class="fa-brands fa-facebook"></i></button>
+                <button class="social-btn"><i class="fa-brands fa-whatsapp"></i></button>
+              </div>
+              <div class="map-placeholder">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>Tetouan, Maroc</span>
+              </div>
+            </div>
+            <div class="contact-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Prenom</label>
+                  <input type="text" placeholder="Votre prenom" />
+                </div>
+                <div class="form-group">
+                  <label>Nom</label>
+                  <input type="text" placeholder="Votre nom" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" placeholder="votre@email.com" />
+              </div>
+              <div class="form-group">
+                <label>Sujet</label>
+                <select>
+                  <option>Commande / Livraison</option>
+                  <option>Abonnement</option>
+                  <option>Catalogue</option>
+                  <option>Autre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Message</label>
+                <textarea placeholder="Votre message…"></textarea>
+              </div>
+              <button class="btn-submit" onclick="showNotif('Message envoye ! Nous vous repondrons sous 24h.')">
+                <i class="fa-solid fa-paper-plane"></i> &nbsp;Envoyer le message
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CART MODAL -->
+    <div class="modal-overlay" id="cartModal">
+      <div class="modal-box" style="width: 90%; max-width: 520px; padding: 36px">
+        <h3 class="cart-modal-title">Mon panier</h3>
+        <div class="cart-items-list" id="cartItemsList"></div>
+        <div id="cartDiscountRow" class="cart-discount-row" style="display: none">
+          <span>Reduction offre speciale (–25%)</span>
+          <span id="cartDiscountAmt"></span>
+        </div>
+        <div class="cart-total" id="cartTotal">Total : 0,00 MAD</div>
+        <div class="cart-actions">
+          <button class="btn-clear" id="clearCartBtn">Vider</button>
+          <button class="btn-buy" id="buyBtn">
+            <i class="fa-solid fa-bag-shopping"></i> &nbsp;Commander
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOK DETAIL MODAL -->
+    <div class="modal-overlay" id="bookDetailModal">
+      <div class="modal-box" style="width: 90%; max-width: 520px; overflow: hidden">
+        <div class="book-detail-cover">
+          <img id="bookDetailImg" src="" alt="" />
+          <button class="book-detail-close" onclick="closeBookDetail()">✕</button>
+        </div>
+        <div class="book-detail-body">
+          <div class="book-detail-cat" id="bookDetailCat"></div>
+          <div class="book-detail-title" id="bookDetailTitle"></div>
+          <div class="book-detail-author" id="bookDetailAuthor"></div>
+          <div class="book-detail-desc" id="bookDetailDesc"></div>
+          <div class="book-detail-row">
+            <div class="book-detail-rating" id="bookDetailRating"></div>
+            <div class="book-detail-price" id="bookDetailPrice"></div>
+          </div>
+          <div class="book-detail-actions">
+            <button class="btn-detail-cancel" onclick="closeBookDetail()">Fermer</button>
+            <button class="btn-detail-add" id="bookDetailAddBtn">
+              <i class="fa-solid fa-cart-plus"></i> &nbsp;Ajouter au panier
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIRM PART MODAL -->
+    <div class="modal-overlay" id="confirmModal">
+      <div class="modal-box" style="width: 90%; max-width: 400px; padding: 32px">
+        <div class="confirm-title">Ajouter au panier</div>
+        <div class="confirm-sub" id="confirmBookTitle"></div>
+        <label class="form-label">Choisir la partie</label>
+        <select class="confirm-select" id="confirmPartSelect"></select>
+        <label class="form-label">Langue</label>
+        <select class="confirm-select" id="confirmLangSelect">
+          <option>Francais</option>
+          <option>Arabe</option>
+          <option>Anglais</option>
+        </select>
+        <div class="confirm-btns">
+          <button class="btn-confirm-cancel" id="confirmCancelBtn">Annuler</button>
+          <button class="btn-confirm-add" id="confirmAddBtn">
+            <i class="fa-solid fa-cart-plus"></i> &nbsp;Ajouter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFER SELECTION MODAL -->
+    <div class="modal-overlay" id="offerModal">
+      <div class="modal-box" style="width: 94%; max-width: 720px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden;">
+        <div class="offer-modal-head">
+          <div>
+            <div class="offer-modal-tag" id="offerTag"></div>
+            <div class="offer-modal-title" id="offerTitle"></div>
+            <div class="offer-modal-quota" id="offerQuota"></div>
+          </div>
+          <button class="offer-modal-close" onclick="closeOfferModal()">✕</button>
+        </div>
+        <div class="offer-modal-books" id="offerBooks"></div>
+        <div class="offer-modal-footer">
+          <div>
+            <div class="offer-modal-summary" id="offerSummary"></div>
+            <div class="offer-prices" id="offerPrices" style="display: none">
+              <span class="offer-price-old" id="offerPriceOld"></span>
+              <span class="offer-price-new" id="offerPriceNew"></span>
+              <span class="offer-badge">–25%</span>
+            </div>
+          </div>
+          <div class="offer-modal-btns">
+            <button class="btn-offer-cancel" onclick="closeOfferModal()">Annuler</button>
+            <button class="btn-offer-confirm" id="offerConfirmBtn" disabled onclick="confirmOfferSelection()">
+              <i class="fa-solid fa-cart-plus"></i> &nbsp;Ajouter au panier
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT PACK MODAL -->
+    <div class="modal-overlay" id="contactPackModal">
+      <div class="modal-box contact-premium-modal">
+        <div class="contact-premium-header">
+          <i class="fa-regular fa-envelope"></i>
+          <h3>Nous contacter</h3>
+        </div>
+        <div class="contact-premium-body">
+          <p>Notre equipe vous repondra dans les plus brefs delais. Souhaitez-vous nous ecrire directement ?</p>
+          <div class="contact-premium-buttons">
+            <button class="btn-contact-close" onclick="closeContactPackModal()">Fermer</button>
+            <button class="btn-contact-whatsapp" onclick="openWhatsApp()">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div class="modal-overlay" id="successModal">
+      <div class="modal-box" style="width: 90%; max-width: 440px; padding: 40px; text-align: center">
+        <div style="font-size: 3rem; margin-bottom: 16px"></div>
+        <div style="font-family: var(--font-d); font-size: 1.8rem; font-weight: 600; color: var(--ink); margin-bottom: 8px">
+          Commande recue !
+        </div>
+        <p style="font-size: 0.88rem; color: var(--ink-70); margin-bottom: 24px; line-height: 1.6">
+          Merci pour votre confiance. Notre equipe vous contactera sous 24h pour confirmer et organiser la livraison.
+        </p>
+        <div id="successDetails" style="font-size: 0.82rem; color: var(--ink-70); line-height: 1.8; margin-bottom: 24px; text-align: left"></div>
+        <button class="btn-primary" id="closeSuccessBtn" style="width: 100%; justify-content: center">
+          Continuer mes achats
+        </button>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+      const books = [
+        {
+          id: 1,
+          title: "Les Miserables",
+          author: "Victor Hugo",
+          category: "romans",
+          price: 19.99,
+          rating: 4.8,
+          cover: "romans/mesirabll.jpg",
+          parts: 5,
+          desc: "Chef-d'oeuvre de Victor Hugo, ce roman monumental suit le destin de Jean Valjean, ancien bagnard en quete de redemption dans la France du XIXe siecle. Une fresque humaine epique mêlant amour, justice, revolution et foi en la bonte.",
+        },
+        {
+          id: 2,
+          title: "Fear",
+          author: "Oussama Muslim",
+          category: "romans",
+          price: 15.5,
+          rating: 4.7,
+          cover: "romans/fear.png",
+          parts: 3,
+          desc: "Un roman saisissant qui plonge le lecteur dans les profondeurs de la peur humaine. A travers des personnages complexes, l'auteur explore comment la crainte faconne nos choix, nos relations et notre rapport au monde.",
+        },
+        {
+          id: 3,
+          title: "Crime and Punishment",
+          author: "Dostoievski",
+          category: "romans",
+          price: 12.9,
+          rating: 4.6,
+          cover: "romans/jarima.jpg",
+          parts: 2,
+          desc: "Raskolnikov, convaincu d'etre au-dessus des lois morales, commet un meurtre et sombre dans un tourment psychologique profond. Dostoievski disseque avec genie la culpabilite, la souffrance et la redemption.",
+        },
+        {
+          id: 4,
+          title: "Les Nuits blanches",
+          author: "Dostoievski",
+          category: "romans",
+          price: 13.9,
+          rating: 4.9,
+          cover: "romans/LES NUIT.jpg",
+          parts: 1,
+          desc: "Court roman melancolique et tendre, il narre la rencontre entre un reveur solitaire et Nastenka lors de nuits blanches a Saint-Petersbourg. Une histoire d'amour fugace et d'illusions perdues, d'une beaute poetique rare.",
+        },
+        {
+          id: 25,
+          title: "Metamorphosis",
+          author: "Kafka",
+          category: "romans",
+          price: 12.9,
+          rating: 4.6,
+          cover: "romans/metamorphosis.jpg",
+          parts: 1,
+          desc: "Gregor Samsa se reveille transforme en insecte gigantesque. A travers cette metamorphose absurde, Kafka explore l'alienation, la famille, le travail et l'identite dans l'une des nouvelles les plus marquantes de la litterature mondiale.",
+        },
+        {
+          id: 5,
+          title: "The God Delusion",
+          author: "Richard Dawkins",
+          category: "philosophique",
+          price: 13.4,
+          rating: 4.4,
+          cover: "philo/god.jpg",
+          parts: 1,
+          desc: "Richard Dawkins defend avec vigueur l'atheisme et demonte les arguments en faveur de l'existence de Dieu. Un essai provocateur et rigoureux qui interroge la religion, la science et la morale avec clarte et conviction.",
+        },
+        {
+          id: 6,
+          title: "Critique of Pure Reason",
+          author: "Immanuel Kant",
+          category: "philosophique",
+          price: 18.0,
+          rating: 4.3,
+          cover: "philo/kant.jpg",
+          parts: 1,
+          desc: "L'oeuvre maitresse de Kant explore les limites et les capacites de la raison humaine. Il fonde une philosophie critique qui revolutionne la metaphysique en distinguant ce que nous pouvons connaitre de ce qui depasse l'entendement.",
+        },
+        {
+          id: 7,
+          title: "Meditations",
+          author: "Marc Aurele",
+          category: "philosophique",
+          price: 22.5,
+          rating: 4.5,
+          cover: "philo/marcus.png",
+          parts: 1,
+          desc: "Journal intime de l'empereur philosophe Marc Aurele, ce texte stoicien est un guide de sagesse intemporel sur la vertu, la mort, le devoir et la maitrise de soi, d'une profondeur et d'une humilite touchantes.",
+        },
+        {
+          id: 8,
+          title: "Being and Time",
+          author: "Heidegger",
+          category: "philosophique",
+          price: 11.9,
+          rating: 4.2,
+          cover: "philo/time.jpg",
+          parts: 1,
+          desc: "Oeuvre fondatrice de l'existentialisme, Heidegger y analyse l'etre humain dans sa temporalite et son rapport a la mort. Une philosophie dense et revolutionnaire qui a transforme la pensee du XXe siecle.",
+        },
+        {
+          id: 26,
+          title: "Ainsi parlait Zarathoustra",
+          author: "Nietzsche",
+          category: "philosophique",
+          price: 11.9,
+          rating: 4.2,
+          cover: "philo/waraditch.jpg",
+          parts: 1,
+          desc: "A travers Zarathoustra, Nietzsche proclame la mort de Dieu et annonce le surhomme. Ce livre est un appel a depasser les valeurs traditionnelles et a creer de nouvelles visions du monde.",
+        },
+        {
+          id: 9,
+          title: "La Bible",
+          author: "Texte sacre",
+          category: "religieux",
+          price: 24.9,
+          rating: 4.9,
+          cover: "din/3isa.jpg",
+          parts: 1,
+          desc: "Texte fondateur du christianisme, la Bible rassemble l'Ancien et le Nouveau Testament. Elle narre l'histoire de la creation, des prophetes, de Jesus-Christ, offrant un message universel d'amour, de foi et de salut.",
+        },
+        {
+          id: 10,
+          title: "Le Coran",
+          author: "Texte sacre",
+          category: "religieux",
+          price: 22.9,
+          rating: 4.9,
+          cover: "din/coran.png",
+          parts: 1,
+          desc: "Parole divine revelee au Prophete Muhammad ﷺ, le Coran guide les croyants sur le chemin de la foi, de la morale et de la spiritualite a travers 114 sourates d'une beaute litteraire incomparable.",
+        },
+        {
+          id: 11,
+          title: "Torah",
+          author: "Texte sacre",
+          category: "religieux",
+          price: 16.5,
+          rating: 4.7,
+          cover: "din/yahodi.jpg",
+          parts: 1,
+          desc: "Texte fondateur du judaisme, la Torah contient les cinq livres de Moise. Elle relate la creation du monde, l'alliance entre Dieu et le peuple hebreu, et les lois divines qui regissent la vie spirituelle et morale.",
+        },
+        {
+          id: 12,
+          title: "Sahih al-Bukhari",
+          author: "al-Bukhari",
+          category: "religieux",
+          price: 9.9,
+          rating: 4.9,
+          cover: "din/bo5ari.jpg",
+          parts: 1,
+          desc: "Considere comme le recueil de hadiths le plus authentique apres le Coran, Sahih al-Bukhari rassemble les paroles et actes du Prophete Muhammad ﷺ. Une reference incontournable pour tout musulman.",
+        },
+        {
+          id: 27,
+          title: "Sahih Muslim",
+          author: "Muslim ibn al-Hajjaj",
+          category: "religieux",
+          price: 9.9,
+          rating: 4.9,
+          cover: "din/moslim.webp",
+          parts: 1,
+          desc: "Deuxieme recueil de hadiths en importance dans la tradition sunnite, Sahih Muslim documente avec une rigueur scientifique exemplaire les enseignements et la pratique du Prophete Muhammad ﷺ.",
+        },
+        {
+          id: 13,
+          title: "Une breve histoire du temps",
+          author: "Stephen Hawking",
+          category: "scientifique",
+          price: 18.5,
+          rating: 4.8,
+          cover: "3ilm/1.webp",
+          parts: 1,
+          desc: "Stephen Hawking vulgarise avec genie les grands mysteres de l'univers : Big Bang, trous noirs, relativite et mecanique quantique. Un voyage fascinant aux frontieres du temps et de l'espace, accessible a tous.",
+        },
+        {
+          id: 14,
+          title: "L'Origine des especes",
+          author: "Charles Darwin",
+          category: "scientifique",
+          price: 21.0,
+          rating: 4.7,
+          cover: "3ilm/darwin.jpg",
+          parts: 1,
+          desc: "Darwin expose sa theorie de l'evolution par selection naturelle. Une oeuvre fondatrice qui a bouleverse la biologie, la philosophie et notre vision de la place de l'homme dans la nature.",
+        },
+        {
+          id: 15,
+          title: "Le Gene egoiste",
+          author: "Richard Dawkins",
+          category: "scientifique",
+          price: 19.9,
+          rating: 4.5,
+          cover: "3ilm/Le Gene egoiste.png",
+          parts: 1,
+          desc: "Dawkins propose une vision revolutionnaire de l'evolution centree sur le gene. Un essai brillant qui reinterprete le comportement animal et humain a travers la biologie evolutive.",
+        },
+        {
+          id: 16,
+          title: "L'Univers elegant",
+          author: "Brian Greene",
+          category: "scientifique",
+          price: 23.0,
+          rating: 4.6,
+          cover: "3ilm/L'Univers elegant.webp",
+          parts: 1,
+          desc: "Brian Greene nous guide dans le monde fascinant de la theorie des cordes et des dimensions cachees. Une exploration de la physique moderne qui reconcilie relativite generale et mecanique quantique.",
+        },
+        {
+          id: 28,
+          title: "The God Particle",
+          author: "Leon Lederman",
+          category: "scientifique",
+          price: 23.0,
+          rating: 4.6,
+          cover: "3ilm/The God Particle.jpg",
+          parts: 1,
+          desc: "L'histoire passionnante de la quete du boson de Higgs. Lederman retrace avec humour et passion les grandes decouvertes de la physique des particules et leur signification pour notre comprehension de l'univers.",
+        },
+        {
+          id: 17,
+          title: "Les Fleurs du mal",
+          author: "Baudelaire",
+          category: "poesie",
+          price: 12.0,
+          rating: 4.7,
+          cover: "POISIE/Les Fleurs du mal.webp",
+          parts: 1,
+          desc: "Recueil poetique majeur de Baudelaire, Les Fleurs du mal explore la beaute cachee dans la souffrance, le vice et la melancolie. Une plongee dans les abysses de l'ame humaine qui a revolutionne la poesie francaise.",
+        },
+        {
+          id: 18,
+          title: "Alcools",
+          author: "Apollinaire",
+          category: "poesie",
+          price: 11.5,
+          rating: 4.5,
+          cover: "POISIE/41yH6yyL6YL.webp",
+          parts: 1,
+          desc: "Premier grand recueil d'Apollinaire, Alcools mêle nostalgie, amour et modernite dans une langue neuve et musicale. Ces poemes celebrent la vie, le temps qui passe et la beaute du monde avec une liberte formelle revolutionnaire.",
+        },
+        {
+          id: 19,
+          title: "Feuilles d'herbe",
+          author: "Walt Whitman",
+          category: "poesie",
+          price: 14.0,
+          rating: 4.6,
+          cover: "POISIE/MTM4MDY0MDI.webp",
+          parts: 1,
+          desc: "Oeuvre maitresse de Whitman, Feuilles d'herbe est un hymne a la democratie, a la nature et au corps humain. En vers libres revolutionnaires, il chante l'universel a travers le particulier avec une energie contagieuse.",
+        },
+        {
+          id: 20,
+          title: "Sonnets",
+          author: "Shakespeare",
+          category: "poesie",
+          price: 13.9,
+          rating: 4.8,
+          cover: "POISIE/Shakespeare.webp",
+          parts: 1,
+          desc: "Les 154 sonnets de Shakespeare sont parmi les plus beaux poemes de la langue anglaise, explorant l'amour, la jalousie, la beaute ephemere et le temps, revelant un Shakespeare intime, passionne et philosophe.",
+        },
+        {
+          id: 21,
+          title: "L'Interpretation des reves",
+          author: "Sigmund Freud",
+          category: "psychologique",
+          price: 25.0,
+          rating: 4.4,
+          cover: "psy/101251_couverture_Hres_0.webp",
+          parts: 1,
+          desc: "Oeuvre fondatrice de la psychanalyse, Freud demontre que les reves sont la voie royale vers l'inconscient. Il developpe sa methode d'interpretation des symboles oniriques, revolutionnant la comprehension de la psyche.",
+        },
+        {
+          id: 22,
+          title: "Psychologie des foules",
+          author: "Gustave Le Bon",
+          category: "psychologique",
+          price: 17.5,
+          rating: 4.3,
+          cover: "psy/Psychologie des foules.webp",
+          parts: 1,
+          desc: "Le Bon analyse comment les individus se transforment au sein d'une foule, perdant leur raison individuelle. Un ouvrage precurseur qui a influence la politique, le marketing et les sciences sociales.",
+        },
+        {
+          id: 23,
+          title: "The Interpretation of Dreams",
+          author: "Sigmund Freud",
+          category: "psychologique",
+          price: 20.0,
+          rating: 4.6,
+          cover: "psy/g.webp",
+          parts: 1,
+          desc: "Version anglaise de l'oeuvre fondatrice de Freud sur les reves. Il expose comment les desirs refoules et les conflits inconscients se manifestent a travers les symboles du reve, posant les bases de la psychanalyse.",
+        },
+        {
+          id: 24,
+          title: "L'Art d'aimer",
+          author: "Erich Fromm",
+          category: "psychologique",
+          price: 13.9,
+          rating: 4.5,
+          cover: "psy/10435830-L.webp",
+          parts: 1,
+          desc: "Fromm demontre que l'amour n'est pas un sentiment passif mais un art qui s'apprend et se pratique. Une reflexion profonde sur les differentes formes d'amour — maternel, fraternel, romantique, divin — et notre capacite a aimer.",
+        },
+      ];
+
+      const CAT_LABELS = {
+        romans: "Roman",
+        philosophique: "Philosophie",
+        religieux: "Spirituel",
+        scientifique: "Science",
+        poesie: "Poesie",
+        psychologique: "Psychologie",
+      };
+
+      // State
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      let currentCat = "all", searchTerm = "", priceFilter = "all", ratingFilter = "all";
+      let pendingBook = null;
+      let activeOffer = null, offerSelected = [];
+
+      // Utils
+      function saveCart() {
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCount();
+      }
+
+      function updateCartCount() {
+        const n = cart.reduce((s, i) => s + i.qty, 0);
+        const el = document.getElementById("cartCount");
+        el.textContent = n;
+        el.classList.remove("bump");
+        void el.offsetWidth;
+        el.classList.add("bump");
+      }
+
+      let notifTimer;
+      function showNotif(msg) {
+        const n = document.getElementById("notification");
+        n.textContent = msg;
+        n.classList.add("show");
+        clearTimeout(notifTimer);
+        notifTimer = setTimeout(() => n.classList.remove("show"), 2400);
+      }
+
+      function stars(r) {
+        return "★".repeat(Math.floor(r)) + (r % 1 >= 0.5 ? "½" : "");
+      }
+
+      // Page navigation
+      function showPage(page, cat) {
+        document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
+        document.getElementById("page-" + page).classList.add("active");
+        document.querySelectorAll(".nav-links a").forEach((a) =>
+          a.classList.toggle("active", a.dataset.page === page)
+        );
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (page === "librairie") {
+          if (cat) {
+            currentCat = cat;
+            document.querySelectorAll(".category-tab").forEach((t) =>
+              t.classList.toggle("active", t.dataset.cat === cat)
+            );
+          }
+          renderBooks();
+        }
+      }
+
+      // Books
+      function getFiltered() {
+        return books.filter((b) => {
+          if (currentCat !== "all" && b.category !== currentCat) return false;
+          if (searchTerm && !b.title.toLowerCase().includes(searchTerm) && !b.author.toLowerCase().includes(searchTerm))
+            return false;
+          if (priceFilter !== "all") {
+            const [mn, mx] = priceFilter.split("-").map(Number);
+            if (b.price < mn || b.price > mx) return false;
+          }
+          if (ratingFilter !== "all" && b.rating < parseFloat(ratingFilter)) return false;
+          return true;
+        });
+      }
+
+      function renderBooks() {
+        const grid = document.getElementById("booksGrid");
+        const list = getFiltered();
+        if (!list.length) {
+          grid.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Aucun livre trouve</p></div>';
+          return;
+        }
+        grid.innerHTML = list.map((b) => `
+    <div class="book-card" onclick="openBookDetail(${b.id})">
+      <div class="book-cover"><img src="${b.cover}" alt="${b.title}" loading="lazy"></div>
+      <div class="book-info">
+        <div class="book-cat-label">${CAT_LABELS[b.category]}</div>
+        <div class="book-title">${b.title}</div>
+        <div class="book-author">${b.author}</div>
+        <hr class="book-divider">
+        <div class="book-meta">
+          <div class="rating"><span>${stars(b.rating)}</span><span class="rating-value">${b.rating}</span></div>
+          <div class="price">${b.price.toFixed(2)} MAD</div>
+        </div>
+        <button class="add-to-cart" onclick="event.stopPropagation();openConfirmModal(${b.id})">Ajouter au panier</button>
+      </div>
+    </div>
+  `).join("");
+      }
+
+      // Book detail modal
+      function openBookDetail(id) {
+        const b = books.find((b) => b.id === id);
+        if (!b) return;
+        document.getElementById("bookDetailImg").src = b.cover;
+        document.getElementById("bookDetailCat").textContent = CAT_LABELS[b.category];
+        document.getElementById("bookDetailTitle").textContent = b.title;
+        document.getElementById("bookDetailAuthor").textContent = b.author ? "— " + b.author : "";
+        document.getElementById("bookDetailDesc").textContent = b.desc || "";
+        document.getElementById("bookDetailRating").innerHTML =
+          `<span>${stars(b.rating)}</span><span style="color:var(--ink-70);margin-left:4px">${b.rating}</span>`;
+        document.getElementById("bookDetailPrice").textContent = b.price.toFixed(2) + " MAD";
+        document.getElementById("bookDetailAddBtn").onclick = () => {
+          closeBookDetail();
+          openConfirmModal(id);
+        };
+        document.getElementById("bookDetailModal").classList.add("open");
+      }
+
+      function closeBookDetail() {
+        document.getElementById("bookDetailModal").classList.remove("open");
+      }
+
+      // Confirm part modal
+      function openConfirmModal(id) {
+        const b = books.find((b) => b.id === id);
+        if (!b) return;
+        pendingBook = b;
+        document.getElementById("confirmBookTitle").innerHTML = `<strong>${b.title}</strong> — ${b.author}`;
+        const sel = document.getElementById("confirmPartSelect");
+        if (!b.parts || b.parts <= 1) {
+          sel.innerHTML = '<option value="full">Livre complet</option>';
+        } else {
+          sel.innerHTML = Array.from(
+            { length: b.parts },
+            (_, i) => `<option value="part${i + 1}">Partie ${i + 1}</option>`
+          ).join("");
+        }
+        document.getElementById("confirmModal").classList.add("open");
+      }
+
+      function closeConfirmModal() {
+        document.getElementById("confirmModal").classList.remove("open");
+        pendingBook = null;
+      }
+
+      // Cart
+      function addToCart(book, part, lang, discount, bundleId) {
+        discount = discount || 0;
+        const partLabel = part === "full" ? "Complet" : "Partie " + part.replace("part", "");
+        const key = bundleId ? `bundle_${bundleId}_${book.id}` : `${book.id}_${part}_${lang}`;
+        const existing = cart.find((i) => i.key === key);
+        if (existing) {
+          existing.qty++;
+        } else {
+          cart.push({ key, id: book.id, title: book.title, author: book.author, price: book.price, discount, partLabel, lang, qty: 1, isBundle: !!bundleId });
+        }
+        saveCart();
+      }
+
+      function removeFromCart(key) {
+        const idx = cart.findIndex((i) => i.key === key);
+        if (idx === -1) return;
+        if (cart[idx].qty > 1) cart[idx].qty--;
+        else cart.splice(idx, 1);
+        saveCart();
+        renderCartModal();
+      }
+      window.removeFromCart = removeFromCart;
+
+      function renderCartModal() {
+        const list = document.getElementById("cartItemsList");
+        if (!cart.length) {
+          list.innerHTML = "<p style='text-align:center;padding:32px 0;color:var(--ink-70)'>Votre panier est vide</p>";
+          document.getElementById("cartTotal").textContent = "Total : 0,00 MAD";
+          document.getElementById("cartDiscountRow").style.display = "none";
+          return;
+        }
+        let subtotal = 0, totalDiscount = 0;
+        list.innerHTML = cart.map((item) => {
+          const line = item.price * item.qty;
+          const disc = item.discount ? line * item.discount : 0;
+          subtotal += line;
+          totalDiscount += disc;
+          const final = (line - disc).toFixed(2);
+          return `
+      <div class="cart-item">
+        <div>
+          <strong>${item.title}</strong>
+          <small>${item.author} × ${item.qty}${item.isBundle ? " · –25%" : ""}</small>
+          <div style="margin-top:4px">
+            <span style="font-size:.7rem;background:var(--gold-lt);color:var(--gold);padding:2px 8px;border-radius:99px;margin-right:6px">${item.partLabel}</span>
+            <span style="font-size:.7rem;color:var(--ink-70)">${item.lang}</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+          <span class="cart-item-price">${final} MAD</span>
+          <button class="cart-item-remove" onclick="removeFromCart('${item.key}')">Retirer</button>
+        </div>
+      </div>`;
+        }).join("");
+        const discRow = document.getElementById("cartDiscountRow");
+        if (totalDiscount > 0) {
+          discRow.style.display = "flex";
+          document.getElementById("cartDiscountAmt").textContent = "–" + totalDiscount.toFixed(2) + " MAD";
+        } else {
+          discRow.style.display = "none";
+        }
+        document.getElementById("cartTotal").textContent = "Total : " + (subtotal - totalDiscount).toFixed(2) + " MAD";
+      }
+
+      // Offer modal
+      const offerConfig = {
+        philo: { tag: "Offre limitee", title: "Pack Philosophie — 3 livres", category: "philosophique", quota: 3 },
+        romans: { tag: "Nouveau", title: "Box Romans Classiques", category: "romans", quota: 4 },
+      };
+
+      function openOfferModal(key) {
+        const cfg = offerConfig[key];
+        if (!cfg) return;
+        activeOffer = { ...cfg, key };
+        offerSelected = [];
+        document.getElementById("offerTag").textContent = cfg.tag;
+        document.getElementById("offerTitle").textContent = cfg.title;
+        updateOfferUI();
+        renderOfferBooks();
+        document.getElementById("offerModal").classList.add("open");
+      }
+
+      function closeOfferModal() {
+        document.getElementById("offerModal").classList.remove("open");
+        activeOffer = null;
+        offerSelected = [];
+      }
+
+      function updateOfferUI() {
+        const left = activeOffer.quota - offerSelected.length;
+        document.getElementById("offerQuota").innerHTML =
+          `Choisissez <strong>${activeOffer.quota} livres</strong> — il vous reste <strong>${left}</strong> choix`;
+        document.getElementById("offerSummary").innerHTML =
+          `<strong>${offerSelected.length}</strong> / ${activeOffer.quota} livres selectionnes`;
+        const pricesEl = document.getElementById("offerPrices");
+        if (offerSelected.length > 0) {
+          const sub = offerSelected.reduce((s, id) => {
+            const b = books.find((b) => b.id === id);
+            return s + (b ? b.price : 0);
+          }, 0);
+          document.getElementById("offerPriceOld").textContent = sub.toFixed(2) + " MAD";
+          document.getElementById("offerPriceNew").textContent = (sub * 0.75).toFixed(2) + " MAD";
+          pricesEl.style.display = "flex";
+        } else {
+          pricesEl.style.display = "none";
+        }
+        document.getElementById("offerConfirmBtn").disabled = offerSelected.length !== activeOffer.quota;
+      }
+
+      function renderOfferBooks() {
+        const available = books.filter((b) => b.category === activeOffer.category);
+        const full = offerSelected.length >= activeOffer.quota;
+        document.getElementById("offerBooks").innerHTML =
+          available.map((b) => {
+            const sel = offerSelected.includes(b.id);
+            const dis = !sel && full;
+            return `
+      <div class="offer-book-item${sel ? " selected" : ""}${dis ? " disabled" : ""}" onclick="toggleOfferBook(${b.id})">
+        <div class="offer-book-check">✓</div>
+        <div class="offer-book-cover"><img src="${b.cover}" alt="${b.title}" loading="lazy"></div>
+        <div class="offer-book-info">
+          <div class="offer-book-title">${b.title}</div>
+          <div class="offer-book-author">${b.author}</div>
+          <div class="offer-book-price">${b.price.toFixed(2)} MAD</div>
+        </div>
+      </div>`;
+          }).join("") ||
+          '<p style="color:var(--ink-70);grid-column:1/-1;text-align:center;padding:40px 0">Aucun livre disponible</p>';
+      }
+
+      function toggleOfferBook(id) {
+        if (offerSelected.includes(id)) {
+          offerSelected = offerSelected.filter((x) => x !== id);
+        } else {
+          if (offerSelected.length >= activeOffer.quota) return;
+          offerSelected.push(id);
+        }
+        updateOfferUI();
+        renderOfferBooks();
+      }
+
+      function confirmOfferSelection() {
+        if (offerSelected.length !== activeOffer.quota) return;
+        const bundleId = Date.now();
+        offerSelected.forEach((id) => {
+          const b = books.find((b) => b.id === id);
+          if (b) addToCart(b, "full", "Francais", 0.25, bundleId);
+        });
+        saveCart();
+        closeOfferModal();
+        showNotif(activeOffer.quota + " livres ajoutes avec –25% !");
+      }
+
+      // Contact pack modal
+      function openContactPackModal() {
+        document.getElementById("contactPackModal").classList.add("open");
+      }
+
+      function closeContactPackModal() {
+        document.getElementById("contactPackModal").classList.remove("open");
+      }
+
+      function openWhatsApp() {
+        const message = encodeURIComponent("Bonjour, je souhaite plus d'informations sur les packs d'abonnement de L'Esprit Livre.");
+        window.open(`https://wa.me/212707694637?text=${message}`, "_blank");
+        closeContactPackModal();
+        showNotif("WhatsApp ouvert ! Un conseiller vous repondra bientot.");
+      }
+
+      // Purchase
+      function processPurchase() {
+        if (!cart.length) {
+          showNotif("Votre panier est vide");
+          return;
+        }
+        let subtotal = 0, totalDiscount = 0;
+        let html = "<p><strong>Recapitulatif :</strong></p>";
+        cart.forEach((item) => {
+          const line = item.price * item.qty;
+          const disc = item.discount ? line * item.discount : 0;
+          subtotal += line;
+          totalDiscount += disc;
+          html += `<p>• ${item.title} ×${item.qty}<br><span style="font-size:.7rem">${item.partLabel} · ${item.lang}${item.isBundle ? " · –25%" : ""}</span></p>`;
+        });
+        html += `<hr style="border:none;border-top:1px solid var(--parchment);margin:12px 0"><p><strong>Total : ${(subtotal - totalDiscount).toFixed(2)} MAD</strong></p>`;
+        document.getElementById("successDetails").innerHTML = html;
+        document.getElementById("cartModal").classList.remove("open");
+        document.getElementById("successModal").classList.add("open");
+        cart = [];
+        saveCart();
+      }
+
+      // Event listeners
+      document.querySelectorAll(".category-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".category-tab").forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+          currentCat = tab.dataset.cat;
+          renderBooks();
+        });
+      });
+
+      document.getElementById("searchInput").addEventListener("input", (e) => {
+        searchTerm = e.target.value.toLowerCase();
+        renderBooks();
+      });
+
+      document.getElementById("priceFilter").addEventListener("change", (e) => {
+        priceFilter = e.target.value;
+        renderBooks();
+      });
+
+      document.getElementById("ratingFilter").addEventListener("change", (e) => {
+        ratingFilter = e.target.value;
+        renderBooks();
+      });
+
+      document.getElementById("cartBtn").addEventListener("click", () => {
+        renderCartModal();
+        document.getElementById("cartModal").classList.add("open");
+      });
+
+      document.getElementById("clearCartBtn").addEventListener("click", () => {
+        cart = [];
+        saveCart();
+        renderCartModal();
+        showNotif("Panier vide");
+      });
+
+      document.getElementById("buyBtn").addEventListener("click", processPurchase);
+
+      document.getElementById("confirmCancelBtn").addEventListener("click", closeConfirmModal);
+
+      document.getElementById("confirmAddBtn").addEventListener("click", () => {
+        if (!pendingBook) return;
+        const part = document.getElementById("confirmPartSelect").value;
+        const lang = document.getElementById("confirmLangSelect").value;
+        addToCart(pendingBook, part, lang);
+        closeConfirmModal();
+        showNotif("\"" + pendingBook.title + "\" ajoute au panier");
+      });
+
+      document.getElementById("closeSuccessBtn").addEventListener("click", () =>
+        document.getElementById("successModal").classList.remove("open")
+      );
+
+      ["cartModal", "bookDetailModal", "confirmModal", "offerModal", "successModal", "contactPackModal"].forEach((id) => {
+        document.getElementById(id).addEventListener("click", (e) => {
+          if (e.target.id === id) document.getElementById(id).classList.remove("open");
+        });
+      });
+
+      // Hamburger menu
+      const ham = document.getElementById("hamburger");
+      const mob = document.getElementById("mobileMenu");
+
+      ham.addEventListener("click", () => {
+        ham.classList.toggle("open");
+        mob.style.display = mob.style.display === "flex" ? "none" : "flex";
+      });
+
+      function closeMobile() {
+        ham.classList.remove("open");
+        mob.style.display = "none";
+      }
+
+      // Navbar scroll
+      window.addEventListener("scroll", () =>
+        document.getElementById("navbar").classList.toggle("scrolled", window.scrollY > 20)
+      );
+
+      // Init
+      updateCartCount();
+      renderBooks();
+    </script>
+  </body>
+</html>          
